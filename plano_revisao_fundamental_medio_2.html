@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Revisão — Fundamental ao Médio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --ink: #171B24;
+    --surface: #1F2531;
+    --surface-2: #262E3D;
+    --surface-3: #2E3749;
+    --rule: #363F53;
+    --chalk: #ECEEF3;
+    --chalk-muted: #8891A6;
+    --chalk-faint: #626C82;
+    --gold: #CBB26B;
+
+    --port: #E2A33E;
+    --mat:  #4F8FE0;
+    --fis:  #9B7FE3;
+    --qui:  #57BE8C;
+    --bio:  #3FBFB5;
+    --his:  #D2665A;
+    --geo:  #A69355;
+    --rev:  #B9C2D4;
+
+    --radius: 14px;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--ink);
+    color: var(--chalk);
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app{ max-width: 980px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* HEADER */
+  header.top{
+    display:flex; flex-direction:column; gap:6px;
+    padding-bottom: 22px; margin-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    animation: rise .5s ease-out;
+  }
+  @keyframes rise{ from{ opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
+  header.top .eyebrow{
+    font-family: var(--font-mono); font-size: .72rem; letter-spacing:.14em;
+    text-transform: uppercase; color: var(--gold); font-weight:500;
+  }
+  header.top h1{
+    font-family: var(--font-display); font-weight:700; font-size: clamp(1.6rem, 4vw, 2.3rem);
+    margin: 2px 0 0; color: var(--chalk); letter-spacing: -0.01em;
+  }
+  header.top h1 em{ font-style: italic; font-weight:500; color: var(--gold); }
+  header.top p.sub{ margin:6px 0 0; color: var(--chalk-muted); font-size: .92rem; max-width: 60ch; }
+
+  /* NAV */
+  nav.tabs{
+    display:flex; gap:4px; background: var(--surface); border:1px solid var(--rule);
+    border-radius: 999px; padding:4px; margin-bottom:24px; position:sticky; top:12px; z-index:10;
+    backdrop-filter: blur(6px);
+  }
+  nav.tabs button{
+    flex:1; border:none; background:transparent; color: var(--chalk-muted);
+    font-family: var(--font-body); font-weight:600; font-size:.86rem; padding:9px 10px;
+    border-radius:999px; cursor:pointer; transition: background .18s, color .18s;
+  }
+  nav.tabs button.active{ background: var(--surface-3); color: var(--chalk); }
+  nav.tabs button:hover:not(.active){ color: var(--chalk); }
+
+  section.view{ display:none; animation: rise .35s ease-out; }
+  section.view.active{ display:block; }
+
+  /* CARD */
+  .card{
+    background: var(--surface); border:1px solid var(--rule); border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .card + .card{ margin-top:14px; }
+
+  /* HOJE CARD */
+  .hoje-card{
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    border:1px solid var(--rule); border-radius: var(--radius); padding:20px;
+    margin-bottom: 26px;
+  }
+  .hoje-head{ display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .hoje-head .label{ font-family: var(--font-mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color: var(--chalk-faint); }
+  .hoje-head h2{ font-family: var(--font-display); font-weight:600; font-size:1.3rem; margin:2px 0 0; }
+  .hoje-head .streak{ font-family: var(--font-mono); font-size:.8rem; color: var(--gold); }
+
+  .bloco-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(210px,1fr)); gap:12px; }
+  .bloco{
+    background: var(--surface-2); border:1px solid var(--rule); border-radius:10px; padding:14px;
+    display:flex; flex-direction:column; gap:8px; position:relative; overflow:hidden;
+  }
+  .bloco::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background: var(--tag-color, var(--chalk-muted)); }
+  .bloco .tag{ font-family: var(--font-mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color: var(--tag-color, var(--chalk-muted)); font-weight:600;}
+  .bloco .topic{ font-size:.92rem; font-weight:500; color: var(--chalk); }
+  .bloco .topic.done{ color: var(--chalk-faint); text-decoration: line-through; }
+  .bloco .meta{ font-size:.74rem; color: var(--chalk-faint); }
+  .content-list{ margin:2px 0 0; padding-left:16px; font-size:.78rem; color: var(--chalk-muted); }
+  .content-list li{ margin-bottom:3px; }
+  .content-list li::marker{ color: var(--tag-color, var(--chalk-faint)); }
+  .bloco button.complete{
+    margin-top:auto; align-self:flex-start; background:transparent; border:1px solid var(--rule);
+    color: var(--chalk); font-family: var(--font-body); font-weight:600; font-size:.78rem;
+    padding:6px 12px; border-radius:999px; cursor:pointer; transition: all .15s;
+  }
+  .bloco button.complete:hover{ border-color: var(--tag-color); color: var(--tag-color); }
+  .bloco button.complete.checked{ background: var(--tag-color); border-color: var(--tag-color); color: var(--ink); }
+  .bloco.finished{ opacity:.55; }
+
+  .rest-card{ text-align:center; padding: 34px 20px; color: var(--chalk-muted); }
+  .rest-card .big{ font-family: var(--font-display); font-size:1.4rem; color: var(--chalk); margin-bottom:6px;}
+
+  /* WEEK GRID (reference) */
+  h2.section-title{ font-family: var(--font-display); font-weight:600; font-size:1.15rem; margin: 0 0 4px; }
+  p.section-hint{ color: var(--chalk-muted); font-size:.85rem; margin: 0 0 16px; }
+
+  .week-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(190px,1fr)); gap:10px; }
+  details.day-col{ background: var(--surface); border:1px solid var(--rule); border-radius:12px; overflow:hidden; align-self:start; }
+  details.day-col.today{ border-color: var(--gold); }
+  details.day-col summary{
+    list-style:none; cursor:pointer; padding:12px 14px; display:flex; align-items:center; gap:8px;
+  }
+  details.day-col summary::-webkit-details-marker{ display:none; }
+  details.day-col summary .day-name{ font-family: var(--font-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color: var(--chalk-faint); }
+  details.day-col.today summary .day-name{ color: var(--gold); }
+  details.day-col summary .chevron{ margin-left:auto; color: var(--chalk-faint); font-size:.72rem; transition: transform .2s; }
+  details.day-col[open] summary .chevron{ transform: rotate(90deg); }
+  .day-body{ padding: 0 12px 12px; display:flex; flex-direction:column; gap:8px; }
+  .day-block{ background: var(--surface-2); border:1px solid var(--rule); border-radius:10px; padding:10px 12px 11px 14px; position:relative; }
+  .day-block::before{ content:""; position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:3px; background: var(--tag-color, var(--chalk-muted)); }
+  .day-block .tag{ font-family: var(--font-mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.06em; color: var(--tag-color, var(--chalk-muted)); font-weight:600; }
+  .day-block .topic{ font-size:.85rem; font-weight:500; margin-top:2px; color: var(--chalk); }
+  .day-block.past{ opacity:.55; }
+  .day-block .past-note{ font-size:.78rem; color: var(--chalk-faint); font-style:italic; margin-top:3px; }
+
+  /* PROGRESSO */
+  details.subject{
+    background: var(--surface); border:1px solid var(--rule); border-radius: var(--radius);
+    margin-bottom:10px; overflow:hidden;
+  }
+  details.subject summary{
+    list-style:none; cursor:pointer; padding:14px 18px; display:flex; align-items:center; gap:14px;
+  }
+  details.subject summary::-webkit-details-marker{ display:none; }
+  details.subject summary .chevron{ margin-left:auto; color: var(--chalk-faint); transition: transform .2s; font-size:.8rem; }
+  details.subject[open] summary .chevron{ transform: rotate(90deg); }
+  .subj-color{ width:11px; height:11px; border-radius:3px; background: var(--sc); flex-shrink:0; }
+  .subj-name{ font-weight:600; font-size:.96rem; flex-shrink:0; min-width: 130px; }
+  .subj-bar-wrap{ flex:1; height:6px; background: var(--surface-3); border-radius:999px; overflow:hidden; min-width:80px; }
+  .subj-bar{ height:100%; background: var(--sc); border-radius:999px; transition: width .3s; }
+  .subj-pct{ font-family: var(--font-mono); font-size:.78rem; color: var(--chalk-muted); width:44px; text-align:right; flex-shrink:0; }
+
+  .trilha{ display:flex; gap:6px; padding: 4px 18px 16px; overflow-x:auto; }
+  .no-scrollbar::-webkit-scrollbar{ height:5px; }
+  .no-scrollbar::-webkit-scrollbar-thumb{ background: var(--rule); border-radius:3px; }
+  .node{
+    width:13px; height:13px; border-radius:50%; border:2px solid var(--sc); flex-shrink:0;
+    background: transparent; position:relative;
+  }
+  .node.done{ background: var(--sc); }
+  .node.current{ box-shadow: 0 0 0 3px color-mix(in srgb, var(--sc) 30%, transparent); }
+
+  .topic-list{ padding: 4px 18px 18px; display:flex; flex-direction:column; gap:0; }
+  .topic-item{
+    display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-top:1px solid var(--rule); font-size:.86rem;
+  }
+  .topic-item:first-child{ border-top:none; }
+  .topic-item input[type=checkbox]{
+    width:16px; height:16px; accent-color: var(--sc); cursor:pointer; flex-shrink:0; margin-top:3px;
+  }
+  .topic-item .t-name{ flex:1; }
+  .topic-item .t-name .main{ display:block; }
+  .topic-item.done .t-name .main{ color: var(--chalk-faint); text-decoration: line-through; }
+  .topic-item .content-list{ --tag-color: var(--sc); }
+  .topic-item .level-pill{ margin-top:1px; }
+  .level-pill{
+    font-family: var(--font-mono); font-size:.62rem; letter-spacing:.05em; text-transform:uppercase;
+    padding:2px 7px; border-radius:999px; border:1px solid var(--rule); color: var(--chalk-faint); flex-shrink:0;
+  }
+
+  /* PAINEL */
+  .stat-row{ display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap:12px; margin-bottom:16px; }
+  .stat{ background: var(--surface); border:1px solid var(--rule); border-radius: var(--radius); padding:16px; }
+  .stat .num{ font-family: var(--font-mono); font-size:1.6rem; font-weight:600; color: var(--gold); }
+  .stat .lbl{ font-size:.78rem; color: var(--chalk-muted); margin-top:2px; }
+
+  .mini-bars{ display:flex; flex-direction:column; gap:10px; }
+  .mini-row{ display:flex; align-items:center; gap:12px; }
+  .mini-row .lbl{ width:110px; font-size:.82rem; color: var(--chalk-muted); flex-shrink:0; }
+  .mini-row .track{ flex:1; height:8px; background: var(--surface-3); border-radius:999px; overflow:hidden; }
+  .mini-row .fill{ height:100%; border-radius:999px; transition: width .3s; }
+  .mini-row .val{ font-family: var(--font-mono); font-size:.76rem; color: var(--chalk-faint); width:60px; text-align:right; }
+
+  .next-list{ display:flex; flex-direction:column; gap:8px; }
+  .next-item{ display:flex; align-items:center; gap:10px; font-size:.86rem; }
+  .next-item .dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .next-item .who{ color: var(--chalk-faint); font-size:.76rem; margin-left:auto; font-family: var(--font-mono); }
+
+  button.reset-btn{
+    background:transparent; border:1px solid var(--his); color: var(--his); font-family: var(--font-body);
+    font-weight:600; font-size:.8rem; padding:8px 14px; border-radius:999px; cursor:pointer; margin-top:18px;
+  }
+  button.reset-btn:hover{ background: var(--his); color: var(--ink); }
+
+  .loading{ text-align:center; padding:60px 20px; color: var(--chalk-muted); font-family: var(--font-mono); font-size:.85rem; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <span class="eyebrow">Revisão · Ensino Fundamental ao Médio</span>
+    <h1>Trilha de <em>Revisão</em></h1>
+    <p class="sub">Português, Matemática, Física, Química, Biologia, História e Geografia — 4h por dia, de segunda a sábado. O progresso fica salvo automaticamente.</p>
+  </header>
+
+  <nav class="tabs">
+    <button data-view="cronograma" class="active">Hoje &amp; Semana</button>
+    <button data-view="progresso">Progresso</button>
+    <button data-view="painel">Painel</button>
+  </nav>
+
+  <section id="view-cronograma" class="view active">
+    <div id="hoje-slot"><div class="loading">Carregando seu plano de hoje…</div></div>
+
+    <h2 class="section-title">Cronograma da semana</h2>
+    <p class="section-hint">Toque em um dia para ver o conteúdo completo do bloco. Dias futuros mostram uma prévia da sequência de tópicos, assumindo que você conclui cada um antes do próximo. Dias que já passaram nesta semana não repetem um tópico específico — o andamento real fica na aba Progresso.</p>
+    <div class="week-grid" id="week-grid"></div>
+  </section>
+
+  <section id="view-progresso" class="view">
+    <h2 class="section-title">Progresso por matéria</h2>
+    <p class="section-hint">Toque em uma matéria para ver a trilha completa e marcar tópicos manualmente.</p>
+    <div id="subjects-slot"><div class="loading">Carregando progresso…</div></div>
+  </section>
+
+  <section id="view-painel" class="view">
+    <h2 class="section-title">Painel geral</h2>
+    <div id="painel-slot"><div class="loading">Calculando estatísticas…</div></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const STORAGE_KEY = "study-progress-v1";
+
+  const SUBJECTS = [
+    { id:"port", name:"Português", hours:4, color:"var(--port)", topics:[
+      {n:"Fonética e fonologia", l:"fund", c:["Encontros vocálicos: ditongo, tritongo e hiato","Encontros consonantais e dígrafos","Divisão silábica e classificação quanto ao nº de sílabas","Sílaba tônica: oxítona, paroxítona, proparoxítona"]},
+      {n:"Ortografia e acentuação gráfica", l:"fund", c:["Regras de acentuação (oxítonas, paroxítonas, proparoxítonas)","Acentuação de hiatos e ditongos","Uso do porquê (por que, por quê, porque, porquê)","Dúvidas frequentes: mal/mau, mas/mais, ao encontro/de encontro"]},
+      {n:"Substantivo e adjetivo", l:"fund", c:["Classificação do substantivo (comum, próprio, coletivo, concreto, abstrato)","Flexões de gênero, número e grau","Adjetivo: classificação e locução adjetiva","Graus do adjetivo (comparativo e superlativo)"]},
+      {n:"Artigo e numeral", l:"fund", c:["Artigo definido e indefinido: uso e valor semântico","Numeral cardinal, ordinal, multiplicativo e fracionário","Emprego do artigo antes de nomes próprios e pronomes"]},
+      {n:"Pronomes", l:"fund", c:["Pronomes pessoais (retos, oblíquos, de tratamento)","Pronomes possessivos, demonstrativos e indefinidos","Pronomes relativos e interrogativos","Colocação pronominal: próclise, mesóclise e ênclise"]},
+      {n:"Verbo: conjugações, modos e tempos", l:"fund", c:["Modos verbais: indicativo, subjuntivo, imperativo","Tempos verbais e relações de sentido","Verbos regulares, irregulares e defectivos","Vozes verbais: ativa, passiva e reflexiva"]},
+      {n:"Advérbio, preposição, conjunção, interjeição", l:"fund", c:["Classificação dos advérbios e locuções adverbiais","Preposições essenciais e acidentais","Conjunções coordenativas e subordinativas","Interjeições e valor expressivo"]},
+      {n:"Formação de palavras (morfologia)", l:"fund", c:["Estrutura das palavras: radical, afixos, desinências","Processos de formação: derivação e composição","Prefixos e sufixos mais cobrados em prova","Onomatopeia e hibridismo"]},
+      {n:"Frase, oração e período", l:"fund", c:["Diferença entre frase, oração e período","Período simples x período composto","Identificação do verbo como núcleo da oração"]},
+      {n:"Sujeito e predicado", l:"fund", c:["Tipos de sujeito (simples, composto, oculto, indeterminado, oração sem sujeito)","Predicado verbal, nominal e verbo-nominal","Predicativo do sujeito e do objeto"]},
+      {n:"Complementos verbal e nominal", l:"medio", c:["Objeto direto e objeto indireto","Objeto direto preposicionado","Complemento nominal x adjunto adnominal"]},
+      {n:"Termos acessórios da oração", l:"medio", c:["Adjunto adnominal e adjunto adverbial","Aposto e suas classificações","Vocativo"]},
+      {n:"Período composto por coordenação", l:"medio", c:["Coordenadas sindéticas (aditivas, adversativas, alternativas, conclusivas, explicativas)","Coordenadas assindéticas","Conectivos e relações de sentido"]},
+      {n:"Orações subordinadas substantivas", l:"medio", c:["Subjetiva, objetiva direta e objetiva indireta","Completiva nominal, predicativa e apositiva","Conectivos \"que\" e \"se\""]},
+      {n:"Orações subordinadas adjetivas e adverbiais", l:"medio", c:["Adjetivas restritivas x explicativas","Adverbiais: causais, condicionais, concessivas, comparativas etc.","Uso da vírgula nas adjetivas explicativas"]},
+      {n:"Concordância verbal", l:"medio", c:["Casos especiais: sujeito composto, coletivo, \"a maioria de\"","Verbos impessoais (haver, fazer)","Concordância com pronomes de tratamento e \"um dos que\""]},
+      {n:"Concordância nominal", l:"medio", c:["Concordância com adjetivo referente a mais de um substantivo","Casos especiais: \"bastante\", \"meio\", \"anexo\", \"próprio\"","Concordância com \"é proibido\", \"é necessário\""]},
+      {n:"Regência verbal e nominal", l:"medio", c:["Verbos com/sem preposição (assistir, obedecer, aspirar, visar)","Regência nominal de adjetivos e substantivos","Uso de \"onde\" x \"aonde\""]},
+      {n:"Crase", l:"medio", c:["Regras gerais de ocorrência da crase","Casos proibidos e casos facultativos","Crase antes de pronomes e expressões de tempo"]},
+      {n:"Pontuação", l:"medio", c:["Uso da vírgula (termos, orações, apostos)","Ponto e vírgula, dois-pontos e travessão","Erros comuns de pontuação em prova"]},
+      {n:"Figuras de linguagem", l:"medio", c:["Figuras de palavras: metáfora, metonímia, catacrese","Figuras de pensamento: ironia, antítese, hipérbole","Figuras de sintaxe: elipse, zeugma, anáfora, pleonasmo","Figuras de som: aliteração, assonância, onomatopeia"]},
+      {n:"Funções da linguagem", l:"medio", c:["Referencial, emotiva e conativa","Fática, metalinguística e poética","Identificação da função predominante em um texto"]},
+      {n:"Coesão e coerência textual", l:"medio", c:["Mecanismos de coesão referencial e sequencial","Conectivos e relações lógicas entre ideias","Coerência: relação entre as partes do texto"]},
+      {n:"Interpretação de texto e gêneros textuais", l:"medio", c:["Estrutura de gêneros cobrados (crônica, notícia, artigo de opinião, charge)","Identificação de tese, argumentos e conclusão","Inferência e leitura nas entrelinhas"]},
+    ]},
+    { id:"mat", name:"Matemática", hours:4, color:"var(--mat)", topics:[
+      {n:"Operações básicas", l:"fund", c:["Adição, subtração, multiplicação e divisão (naturais e inteiros)","Ordem das operações (parênteses, colchetes, chaves)","MDC e MMC aplicados a problemas"]},
+      {n:"Frações e operações com frações", l:"fund", c:["Soma, subtração, multiplicação e divisão de frações","Simplificação e frações equivalentes","Conversão entre frações e decimais"]},
+      {n:"Decimais e porcentagem", l:"fund", c:["Operações com números decimais","Cálculo de porcentagem, aumento e desconto","Juros simples (introdução)"]},
+      {n:"Razão, proporção e regra de três", l:"fund", c:["Grandezas diretamente e inversamente proporcionais","Regra de três simples","Regra de três composta"]},
+      {n:"Potenciação e radiciação", l:"fund", c:["Propriedades das potências","Propriedades dos radicais e racionalização","Notação científica"]},
+      {n:"Expressões algébricas e produtos notáveis", l:"fund", c:["Simplificação de expressões algébricas","Produtos notáveis (quadrado da soma/diferença, soma x diferença)","Fatoração de expressões algébricas"]},
+      {n:"Equações do 1º grau", l:"fund", c:["Resolução de equações com uma incógnita","Equações fracionárias e literais","Problemas contextualizados"]},
+      {n:"Sistemas de equações do 1º grau", l:"fund", c:["Método da substituição","Método da adição","Interpretação gráfica de sistemas"]},
+      {n:"Geometria plana: ângulos e polígonos", l:"fund", c:["Classificação de ângulos e relações angulares","Soma dos ângulos internos e externos de polígonos","Propriedades de triângulos e quadriláteros"]},
+      {n:"Geometria plana: áreas e perímetros", l:"fund", c:["Área de triângulo, quadrado, retângulo, trapézio e círculo","Cálculo de perímetros","Teorema de Pitágoras aplicado a áreas"]},
+      {n:"Equações do 2º grau", l:"medio", c:["Fórmula de Bhaskara","Soma e produto das raízes","Discriminante e natureza das raízes"]},
+      {n:"Inequações", l:"medio", c:["Inequações do 1º e 2º grau","Inequações produto e quociente","Representação de soluções em intervalos"]},
+      {n:"Funções: domínio e imagem", l:"medio", c:["Conceito de função e representação gráfica","Domínio, contradomínio e imagem","Função composta e inversa (noções)"]},
+      {n:"Função do 1º grau (afim)", l:"medio", c:["Coeficiente angular e linear","Estudo do sinal da função afim","Gráfico e zero da função"]},
+      {n:"Função do 2º grau (quadrática)", l:"medio", c:["Vértice da parábola e concavidade","Estudo do sinal da função quadrática","Máximos e mínimos em problemas de otimização"]},
+      {n:"Função exponencial", l:"medio", c:["Propriedades das potências na função exponencial","Gráfico, crescimento e decrescimento","Equações exponenciais"]},
+      {n:"Função logarítmica", l:"medio", c:["Definição e propriedades dos logaritmos","Mudança de base","Equações logarítmicas e relação com a exponencial"]},
+      {n:"Progressão aritmética (PA)", l:"medio", c:["Termo geral da PA","Soma dos termos de uma PA","Problemas contextualizados"]},
+      {n:"Progressão geométrica (PG)", l:"medio", c:["Termo geral da PG","Soma de PG finita e infinita","Juros compostos e crescimento exponencial"]},
+      {n:"Geometria espacial: prismas e cilindros", l:"medio", c:["Área total e volume de prismas","Área total e volume de cilindros","Relações entre base, altura e geratriz"]},
+      {n:"Geometria espacial: pirâmides, cones e esferas", l:"medio", c:["Área total e volume de pirâmides","Área total e volume de cones","Área e volume da esfera"]},
+      {n:"Trigonometria no triângulo retângulo", l:"medio", c:["Seno, cosseno e tangente","Relações métricas no triângulo retângulo","Aplicações em altura e distância"]},
+      {n:"Trigonometria: ciclo trigonométrico", l:"medio", c:["Arcos e ângulos notáveis","Funções seno, cosseno e tangente no ciclo","Redução ao primeiro quadrante"]},
+      {n:"Análise combinatória", l:"medio", c:["Princípio fundamental da contagem","Permutação, arranjo e combinação","Problemas com e sem repetição"]},
+      {n:"Probabilidade", l:"medio", c:["Espaço amostral e eventos","Probabilidade condicional","União e interseção de eventos"]},
+      {n:"Estatística básica", l:"medio", c:["Média, moda e mediana","Leitura e interpretação de gráficos e tabelas","Desvio padrão (noções)"]},
+      {n:"Geometria analítica", l:"medio", c:["Distância entre dois pontos","Equação da reta e coeficiente angular","Paralelismo e perpendicularismo entre retas"]},
+      {n:"Matrizes e determinantes", l:"medio", c:["Operações com matrizes (soma, produto)","Determinantes 2x2 e regra de Sarrus (3x3)","Matriz inversa e relação com sistemas lineares"]},
+    ]},
+    { id:"fis", name:"Física", hours:3, color:"var(--fis)", topics:[
+      {n:"Grandezas físicas e unidades de medida", l:"fund", c:["Sistema Internacional de Unidades","Conversão de unidades","Grandezas escalares e vetoriais (introdução)"]},
+      {n:"Noções de movimento", l:"fund", c:["Trajetória, deslocamento e velocidade","Repouso e movimento (referencial)","Velocidade média"]},
+      {n:"Noções de densidade e pressão", l:"fund", c:["Cálculo de densidade","Conceito de pressão e unidades","Aplicações simples (flutuação)"]},
+      {n:"Noções de calor e temperatura", l:"fund", c:["Diferença entre calor e temperatura","Escalas termométricas (Celsius, Fahrenheit, Kelvin)","Propagação de calor (condução, convecção, irradiação)"]},
+      {n:"Cinemática: movimento uniforme (MU)", l:"medio", c:["Função horária da posição no MU","Gráficos posição x tempo e velocidade x tempo","Encontro de móveis"]},
+      {n:"Cinemática: movimento uniformemente variado (MUV)", l:"medio", c:["Função horária da velocidade e da posição","Equação de Torricelli","Gráficos do MUV"]},
+      {n:"Movimento circular", l:"medio", c:["Período, frequência e velocidade angular","Velocidade tangencial","Aceleração centrípeta"]},
+      {n:"Leis de Newton", l:"medio", c:["1ª Lei — inércia","2ª Lei — F = m.a","3ª Lei — ação e reação, força de atrito"]},
+      {n:"Trabalho e energia", l:"medio", c:["Trabalho de uma força","Energia cinética e potencial (gravitacional e elástica)","Conservação de energia mecânica"]},
+      {n:"Impulso e quantidade de movimento", l:"medio", c:["Cálculo de impulso e quantidade de movimento","Conservação da quantidade de movimento","Colisões elásticas e inelásticas"]},
+      {n:"Gravitação universal", l:"medio", c:["Lei da gravitação universal de Newton","Leis de Kepler","Peso e aceleração da gravidade"]},
+      {n:"Hidrostática", l:"medio", c:["Pressão hidrostática e Princípio de Stevin","Princípio de Pascal","Princípio de Arquimedes (empuxo)"]},
+      {n:"Termometria e dilatação térmica", l:"medio", c:["Conversão entre escalas termométricas","Dilatação linear, superficial e volumétrica","Aplicações práticas da dilatação"]},
+      {n:"Calorimetria e mudanças de estado", l:"medio", c:["Calor sensível e calor latente","Curvas de aquecimento","Trocas de calor e equilíbrio térmico"]},
+      {n:"Termodinâmica", l:"medio", c:["1ª e 2ª leis da termodinâmica","Transformações gasosas (isotérmica, isobárica, isovolumétrica)","Máquinas térmicas e rendimento"]},
+      {n:"Óptica: reflexão e espelhos", l:"medio", c:["Leis da reflexão","Espelhos planos e esféricos","Formação de imagens e equação dos espelhos"]},
+      {n:"Óptica: refração e lentes", l:"medio", c:["Leis da refração e índice de refração","Lentes convergentes e divergentes","Equação dos fabricantes e defeitos da visão"]},
+      {n:"Ondulatória", l:"medio", c:["Elementos de uma onda (comprimento, frequência, amplitude)","Classificação das ondas","Reflexão, refração, difração e interferência"]},
+      {n:"Eletrostática e eletrodinâmica", l:"medio", c:["Carga elétrica e Lei de Coulomb","Corrente elétrica e Lei de Ohm","Potência elétrica"]},
+      {n:"Eletromagnetismo", l:"medio", c:["Campo magnético e força magnética","Indução eletromagnética","Aplicações: motores e geradores"]},
+    ]},
+    { id:"qui", name:"Química", hours:3, color:"var(--qui)", topics:[
+      {n:"Matéria, propriedades e transformações", l:"fund", c:["Propriedades gerais e específicas da matéria","Transformações físicas x químicas","Evidências de reação química"]},
+      {n:"Estados físicos e mudanças de estado", l:"fund", c:["Sólido, líquido e gasoso","Fusão, vaporização, condensação, solidificação, sublimação","Curvas de aquecimento e resfriamento"]},
+      {n:"Misturas e processos de separação", l:"fund", c:["Misturas homogêneas e heterogêneas","Métodos de separação (filtração, destilação, decantação)","Substâncias puras x misturas"]},
+      {n:"Introdução à tabela periódica", l:"fund", c:["Organização por número atômico","Períodos e grupos","Metais, ametais e gases nobres"]},
+      {n:"Modelos atômicos", l:"medio", c:["Modelos de Dalton, Thomson, Rutherford e Bohr","Número atômico, número de massa e íons","Configuração eletrônica básica"]},
+      {n:"Tabela periódica e propriedades periódicas", l:"medio", c:["Raio atômico, eletronegatividade e energia de ionização","Afinidade eletrônica","Variação das propriedades em grupos e períodos"]},
+      {n:"Ligações químicas", l:"medio", c:["Ligação iônica e fórmulas de compostos iônicos","Ligação covalente e geometria molecular","Ligação metálica e propriedades dos metais"]},
+      {n:"Funções inorgânicas: ácidos e bases", l:"medio", c:["Definições de Arrhenius","Nomenclatura de ácidos e bases","Força de ácidos e bases"]},
+      {n:"Funções inorgânicas: sais e óxidos", l:"medio", c:["Formação e nomenclatura de sais","Classificação de óxidos (básico, ácido, anfótero, neutro)","Reações de neutralização"]},
+      {n:"Reações químicas e balanceamento", l:"medio", c:["Tipos de reação (síntese, análise, simples e dupla troca)","Balanceamento por tentativa","Lei da conservação das massas (Lavoisier)"]},
+      {n:"Cálculos estequiométricos", l:"medio", c:["Mol e massa molar","Relações estequiométricas em equações balanceadas","Reagente limitante e rendimento de reação"]},
+      {n:"Soluções: concentração e diluição", l:"medio", c:["Concentração comum e concentração molar","Diluição de soluções","Mistura de soluções"]},
+      {n:"Termoquímica", l:"medio", c:["Reações exotérmicas e endotérmicas","Entalpia de reação","Lei de Hess"]},
+      {n:"Cinética química", l:"medio", c:["Velocidade de reação","Fatores que alteram a velocidade (temperatura, concentração, catalisador)","Lei da velocidade e ordem de reação"]},
+      {n:"Equilíbrio químico", l:"medio", c:["Constante de equilíbrio (Kc e Kp)","Princípio de Le Chatelier","Deslocamento de equilíbrio"]},
+      {n:"Eletroquímica: pilhas", l:"medio", c:["Reações de oxirredução","Pilha de Daniell e potencial padrão","Fila de reatividade dos metais"]},
+      {n:"Eletroquímica: eletrólise", l:"medio", c:["Eletrólise ígnea e aquosa","Leis de Faraday","Aplicações práticas (galvanoplastia)"]},
+      {n:"Radioatividade", l:"medio", c:["Emissões alfa, beta e gama","Meia-vida","Fissão e fusão nuclear"]},
+      {n:"Química orgânica: cadeias e funções", l:"medio", c:["Classificação de cadeias carbônicas","Hidrocarbonetos (alcanos, alcenos, alcinos, aromáticos)","Funções oxigenadas (álcool, aldeído, cetona, ácido carboxílico)"]},
+      {n:"Isomeria e polímeros", l:"medio", c:["Isomeria plana e espacial","Polímeros naturais e sintéticos","Reações de polimerização"]},
+    ]},
+    { id:"bio", name:"Biologia", hours:3, color:"var(--bio)", topics:[
+      {n:"Características dos seres vivos", l:"fund", c:["Organização celular, metabolismo e reprodução","Homeostase e resposta a estímulos","Classificação em grandes grupos (noções)"]},
+      {n:"Níveis de organização", l:"fund", c:["Célula, tecido, órgão, sistema, organismo","Organização de ecossistemas","Relação entre estrutura e função"]},
+      {n:"Corpo humano: noções gerais", l:"fund", c:["Principais sistemas do corpo humano","Função geral de cada sistema","Integração entre sistemas"]},
+      {n:"Ecologia: noções básicas", l:"fund", c:["População, comunidade e ecossistema","Cadeia e teia alimentar (introdução)","Fatores bióticos e abióticos"]},
+      {n:"Citologia: estrutura da célula", l:"medio", c:["Célula procariótica x eucariótica","Organelas citoplasmáticas e funções","Núcleo e material genético"]},
+      {n:"Membrana e transporte celular", l:"medio", c:["Modelo mosaico fluido da membrana","Transporte passivo (difusão, osmose)","Transporte ativo, endocitose e exocitose"]},
+      {n:"Divisão celular: mitose e meiose", l:"medio", c:["Fases da mitose","Fases da meiose e variabilidade genética","Diferenças entre mitose e meiose"]},
+      {n:"Metabolismo energético (respiração e fotossíntese)", l:"medio", c:["Etapas da respiração celular","Fotossíntese: fase clara e fase escura","Relação entre os dois processos"]},
+      {n:"Genética: 1ª e 2ª leis de Mendel", l:"medio", c:["Gene, alelo, genótipo e fenótipo","1ª Lei de Mendel (segregação)","2ª Lei de Mendel (segregação independente)"]},
+      {n:"Genética: heranças e grupos sanguíneos", l:"medio", c:["Sistema ABO e fator Rh","Herança ligada ao sexo","Leitura de heredogramas"]},
+      {n:"Biologia molecular: DNA, RNA e síntese proteica", l:"medio", c:["Estrutura do DNA e RNA","Replicação do DNA","Transcrição e tradução (síntese de proteínas)"]},
+      {n:"Evolução", l:"medio", c:["Lamarck x Darwin","Seleção natural e adaptação","Evidências evolutivas (fósseis, anatomia comparada)"]},
+      {n:"Classificação dos seres vivos", l:"medio", c:["Sistema de classificação em reinos/domínios","Nomenclatura binomial","Critérios de classificação filogenética"]},
+      {n:"Vírus, reino monera e protista", l:"medio", c:["Estrutura e reprodução de vírus","Bactérias: estrutura e importância","Protozoários e algas (reino protista)"]},
+      {n:"Reino fungi", l:"medio", c:["Características gerais dos fungos","Reprodução por esporos","Importância ecológica e econômica"]},
+      {n:"Reino plantae: briófitas e pteridófitas", l:"medio", c:["Características das briófitas","Características das pteridófitas","Alternância de gerações"]},
+      {n:"Reino plantae: gimnospermas e angiospermas", l:"medio", c:["Características das gimnospermas","Estrutura da flor e do fruto nas angiospermas","Polinização e dispersão de sementes"]},
+      {n:"Reino animalia: invertebrados", l:"medio", c:["Poríferos e cnidários","Vermes (platelmintos, nematelmintos, anelídeos)","Moluscos, artrópodes e equinodermos"]},
+      {n:"Reino animalia: vertebrados", l:"medio", c:["Peixes, anfíbios e répteis","Aves e mamíferos","Características evolutivas dos grupos"]},
+      {n:"Fisiologia humana: digestório e respiratório", l:"medio", c:["Órgãos e etapas da digestão","Trocas gasosas na respiração","Doenças relacionadas aos sistemas"]},
+      {n:"Fisiologia humana: circulatório, nervoso e endócrino", l:"medio", c:["Circulação sanguínea e coração","Sistema nervoso central e periférico","Principais glândulas e hormônios"]},
+      {n:"Ecologia: cadeias, ciclos e relações ecológicas", l:"medio", c:["Cadeias e teias alimentares","Ciclos biogeoquímicos (água, carbono, nitrogênio)","Relações ecológicas (predatismo, mutualismo, competição)"]},
+    ]},
+    { id:"his", name:"História", hours:3, color:"var(--his)", topics:[
+      {n:"Pré-história", l:"fund", c:["Paleolítico e Neolítico","Revolução agrícola e sedentarização","Surgimento das primeiras cidades"]},
+      {n:"Egito e Mesopotâmia", l:"fund", c:["Organização social e política do Egito","Cidades-estado da Mesopotâmia","Escrita e primeiros códigos de leis"]},
+      {n:"Grécia antiga", l:"fund", c:["Pólis gregas: Atenas e Esparta","Democracia ateniense","Guerras Médicas e do Peloponeso"]},
+      {n:"Roma antiga", l:"fund", c:["Realeza, República e Império","Organização social (patrícios e plebeus)","Expansão territorial e legado jurídico"]},
+      {n:"Idade Média", l:"fund", c:["Feudalismo: estrutura social e econômica","Papel da Igreja Católica","Cruzadas e crise do feudalismo"]},
+      {n:"Grandes navegações", l:"fund", c:["Contexto e causas das navegações","Pioneirismo marítimo de Portugal e Espanha","Tratado de Tordesilhas"]},
+      {n:"Brasil colonial", l:"fund", c:["Capitanias hereditárias e Governo-Geral","Economia açucareira e escravidão","Ciclo do ouro e invasões estrangeiras"]},
+      {n:"Idade Moderna: Renascimento e Reforma", l:"medio", c:["Características do Renascimento cultural","Reforma Protestante (Lutero, Calvino)","Contrarreforma católica"]},
+      {n:"Absolutismo e Iluminismo", l:"medio", c:["Características do Estado absolutista","Principais pensadores iluministas","Influência do Iluminismo nas revoluções"]},
+      {n:"Revolução Industrial", l:"medio", c:["Contexto e causas na Inglaterra","Transformações tecnológicas e sociais","Urbanização e questão social"]},
+      {n:"Independência do Brasil", l:"medio", c:["Vinda da família real portuguesa","Processo de independência (1822)","Consolidação do Império"]},
+      {n:"Brasil Império", l:"medio", c:["Primeiro e Segundo Reinado","Guerra do Paraguai","Crise do Império e abolição da escravidão"]},
+      {n:"Revolução Francesa e era napoleônica", l:"medio", c:["Causas e fases da Revolução Francesa","Declaração dos Direitos do Homem","Ascensão e queda de Napoleão"]},
+      {n:"Imperialismo e Primeira Guerra Mundial", l:"medio", c:["Neocolonialismo na África e Ásia","Causas da Primeira Guerra Mundial","Tratado de Versalhes"]},
+      {n:"Revolução Russa", l:"medio", c:["Contexto do Império Russo","Revoluções de fevereiro e outubro de 1917","Formação da URSS"]},
+      {n:"Crise de 1929 e totalitarismos", l:"medio", c:["Causas e consequências da Crise de 1929","Ascensão do fascismo na Itália","Ascensão do nazismo na Alemanha"]},
+      {n:"Segunda Guerra Mundial", l:"medio", c:["Causas e principais fases do conflito","Holocausto","Consequências e criação da ONU"]},
+      {n:"Era Vargas", l:"medio", c:["Revolução de 1930","Estado Novo e características autoritárias","Políticas trabalhistas e industrialização"]},
+      {n:"Guerra Fria", l:"medio", c:["Bipolarização EUA x URSS","Principais conflitos (Coreia, Vietnã, Cuba)","Queda do Muro de Berlim e fim da URSS"]},
+      {n:"Ditadura militar no Brasil", l:"medio", c:["Golpe de 1964","AI-5 e anos de chumbo","Abertura política e redemocratização"]},
+      {n:"Redemocratização e Brasil contemporâneo", l:"medio", c:["Constituição de 1988","Plano Real e estabilização econômica","Principais transformações políticas recentes"]},
+    ]},
+    { id:"geo", name:"Geografia", hours:3, color:"var(--geo)", topics:[
+      {n:"Cartografia: escalas, projeções e coordenadas", l:"fund", c:["Escala numérica e gráfica","Projeções cartográficas (Mercator, Peters)","Coordenadas geográficas: latitude e longitude"]},
+      {n:"Estrutura geológica e relevo", l:"fund", c:["Estrutura interna da Terra","Formas de relevo (planalto, planície, depressão)","Agentes internos e externos do relevo"]},
+      {n:"Climatologia", l:"fund", c:["Elementos e fatores climáticos","Principais tipos climáticos","Massas de ar e fenômenos (El Niño, La Niña)"]},
+      {n:"Hidrografia", l:"fund", c:["Bacias hidrográficas brasileiras","Rios: características e aproveitamento econômico","Recursos hídricos e escassez de água"]},
+      {n:"Biomas brasileiros e mundiais", l:"fund", c:["Biomas do Brasil (Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal, Pampa)","Biomas mundiais (tundra, taiga, savana, deserto)","Impactos ambientais nos biomas"]},
+      {n:"Formação territorial do Brasil", l:"medio", c:["Expansão das fronteiras coloniais","Regionalização do território (IBGE)","Divisão política e administrativa"]},
+      {n:"Urbanização e êxodo rural", l:"medio", c:["Processo de urbanização brasileira","Causas e consequências do êxodo rural","Problemas urbanos (habitação, mobilidade)"]},
+      {n:"Demografia e dinâmica populacional", l:"medio", c:["Indicadores demográficos (natalidade, mortalidade, IDH)","Transição demográfica","Distribuição e densidade populacional"]},
+      {n:"Globalização e blocos econômicos", l:"medio", c:["Características da globalização","Blocos econômicos (Mercosul, União Europeia)","Vantagens e críticas à globalização"]},
+      {n:"Geopolítica mundial", l:"medio", c:["Conflitos geopolíticos contemporâneos","Organizações internacionais (ONU, OTAN)","Nova ordem mundial multipolar"]},
+      {n:"Agropecuária e estrutura fundiária", l:"medio", c:["Estrutura fundiária brasileira (latifúndio, minifúndio)","Modernização da agricultura","Reforma agrária e conflitos no campo"]},
+      {n:"Industrialização brasileira e mundial", l:"medio", c:["Fases da industrialização no Brasil","Distribuição espacial da indústria","Novas tecnologias e reestruturação produtiva"]},
+      {n:"Fontes de energia e matriz energética", l:"medio", c:["Matriz energética brasileira e mundial","Fontes renováveis e não renováveis","Impactos ambientais da produção de energia"]},
+      {n:"Questões ambientais e sustentabilidade", l:"medio", c:["Aquecimento global e efeito estufa","Desmatamento e perda de biodiversidade","Desenvolvimento sustentável e acordos ambientais"]},
+      {n:"Geografia da América Latina", l:"medio", c:["Aspectos físicos e humanos da região","Blocos econômicos regionais","Características socioeconômicas principais"]},
+      {n:"Geografia da Europa", l:"medio", c:["Aspectos físicos e divisão regional","União Europeia: características e desafios","Questões migratórias"]},
+      {n:"Geografia da Ásia e Oriente Médio", l:"medio", c:["Diversidade física e cultural da Ásia","Conflitos no Oriente Médio","Crescimento econômico asiático (China, Índia)"]},
+      {n:"Geografia da África", l:"medio", c:["Aspectos físicos e diversidade étnica","Colonização e descolonização","Desafios socioeconômicos contemporâneos"]},
+    ]},
+  ];
+
+  // assign stable ids to topics
+  SUBJECTS.forEach(s => { s.topics.forEach((t,i) => { t.id = s.id + "-" + String(i+1).padStart(2,"0"); }); });
+
+  const SCHEDULE = {
+    1: ["port","mat","fis","qui"],
+    2: ["mat","port","bio","his"],
+    3: ["mat","qui","geo","port"],
+    4: ["fis","mat","bio","his"],
+    5: ["port","qui","geo","his"],
+    6: ["revisao","fis","bio","geo"],
+  };
+  const DAY_NAMES = {0:"Domingo",1:"Segunda-feira",2:"Terça-feira",3:"Quarta-feira",4:"Quinta-feira",5:"Sexta-feira",6:"Sábado"};
+  const DAY_SHORT = {1:"Seg",2:"Ter",3:"Qua",4:"Qui",5:"Sex",6:"Sáb"};
+
+  let state = { completed:{}, revisaoLog:[] };
+  let loaded = false;
+
+  function subjectById(id){ return SUBJECTS.find(s => s.id === id); }
+
+  function isDone(subjectId, topicId){
+    const arr = state.completed[subjectId] || [];
+    return arr.indexOf(topicId) >= 0;
+  }
+
+  function currentTopic(subjectId){
+    const s = subjectById(subjectId);
+    if(!s) return null;
+    for(const t of s.topics){ if(!isDone(subjectId, t.id)) return t; }
+    return null; // finished
+  }
+
+  function progressOf(subjectId){
+    const s = subjectById(subjectId);
+    const done = (state.completed[subjectId] || []).length;
+    return { done, total: s.topics.length, pct: Math.round((done / s.topics.length) * 100) };
+  }
+
+  async function loadState(){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, false);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        state = { completed: parsed.completed || {}, revisaoLog: parsed.revisaoLog || [] };
+      }
+    }catch(e){
+      state = { completed:{}, revisaoLog:[] };
+    }
+    loaded = true;
+  }
+
+  async function saveState(){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+    }catch(e){
+      console.error("Erro ao salvar progresso:", e);
+    }
+  }
+
+  function toggleTopic(subjectId, topicId){
+    const arr = state.completed[subjectId] || (state.completed[subjectId] = []);
+    const idx = arr.indexOf(topicId);
+    if(idx >= 0) arr.splice(idx,1); else arr.push(topicId);
+    saveState();
+    renderAll();
+  }
+
+  function todayKey(){
+    const d = new Date();
+    return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+
+  function toggleRevisaoHoje(){
+    const key = todayKey();
+    const idx = state.revisaoLog.indexOf(key);
+    if(idx >= 0) state.revisaoLog.splice(idx,1); else state.revisaoLog.push(key);
+    saveState();
+    renderAll();
+  }
+
+  function revisaoDoneToday(){ return state.revisaoLog.indexOf(todayKey()) >= 0; }
+
+  function revisaoStreak(){
+    // count consecutive days (including today) present in log, walking backwards
+    let count = 0;
+    let d = new Date();
+    while(true){
+      const k = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+      if(state.revisaoLog.indexOf(k) >= 0){ count++; d.setDate(d.getDate()-1); }
+      else break;
+    }
+    return count;
+  }
+
+  /* ---------- RENDER: HOJE ---------- */
+  function renderHoje(){
+    const slot = document.getElementById("hoje-slot");
+    const dow = new Date().getDay();
+    const blocks = SCHEDULE[dow];
+
+    if(!blocks){
+      slot.innerHTML = '<div class="hoje-card rest-card"><div class="big">Domingo é dia de descanso 🌿</div>Aproveite para recarregar — a trilha continua amanhã.</div>';
+      return;
+    }
+
+    const label = DAY_NAMES[dow];
+    let html = '<div class="hoje-card"><div class="hoje-head">';
+    html += '<div><div class="label">Hoje</div><h2>'+label+'</h2></div>';
+    if(revisaoStreak() > 0) html += '<div class="streak">🔥 '+revisaoStreak()+' dia(s) seguidos de revisão</div>';
+    html += '</div><div class="bloco-grid">';
+
+    blocks.forEach(sid => {
+      if(sid === "revisao"){
+        const done = revisaoDoneToday();
+        html += '<div class="bloco" style="--tag-color:var(--rev)">';
+        html += '<div class="tag">Revisão geral</div>';
+        html += '<div class="topic'+(done?' done':'')+'">Revise os tópicos concluídos nesta semana e refaça exercícios de erros recorrentes.</div>';
+        html += '<div class="meta">Bloco livre · 1h</div>';
+        html += '<button class="complete'+(done?' checked':'')+'" onclick="StudyApp.toggleRevisao()">'+(done?'✓ Feito hoje':'Marcar como feito')+'</button>';
+        html += '</div>';
+        return;
+      }
+      const s = subjectById(sid);
+      const t = currentTopic(sid);
+      const finished = !t;
+      html += '<div class="bloco'+(finished?' finished':'')+'" style="--tag-color:'+s.color+'">';
+      html += '<div class="tag">'+s.name+'</div>';
+      if(finished){
+        html += '<div class="topic done">🎉 Trilha concluída!</div><div class="meta">Todos os tópicos revisados</div>';
+      } else {
+        html += '<div class="topic">'+t.n+'</div>';
+        html += '<ul class="content-list">'+t.c.map(item=>'<li>'+item+'</li>').join('')+'</ul>';
+        html += '<div class="meta">'+(t.l==="fund"?"Fundamental":"Médio")+' · próximo da fila</div>';
+        html += '<button class="complete" onclick="StudyApp.completeCurrent(\''+sid+'\',\''+t.id+'\')">Concluir tópico</button>';
+      }
+      html += '</div>';
+    });
+
+    html += '</div></div>';
+    slot.innerHTML = html;
+  }
+
+  /* ---------- RENDER: WEEK GRID ---------- */
+  function renderWeekGrid(){
+    const grid = document.getElementById("week-grid");
+    const todayDow = new Date().getDay();
+    const pastDays = todayDow === 0 ? [] : [1,2,3,4,5,6].filter(d => d < todayDow);
+    const cursor = {}; // subjectId -> how many upcoming occurrences already assigned this week
+
+    let html = "";
+    [1,2,3,4,5,6].forEach(dow => {
+      const isPast = pastDays.indexOf(dow) >= 0;
+      const isToday = dow === todayDow;
+      html += '<details class="day-col'+(isToday?' today':'')+'"'+(isToday?' open':'')+'>';
+      html += '<summary><span class="day-name">'+DAY_NAMES[dow]+(isToday?' · hoje':'')+'</span><span class="chevron">▶</span></summary>';
+      html += '<div class="day-body">';
+
+      SCHEDULE[dow].forEach(sid => {
+        if(sid === "revisao"){
+          html += '<div class="day-block" style="--tag-color:var(--rev)"><div class="tag">Revisão geral</div>';
+          html += isPast
+            ? '<div class="past-note">Essa sessão já passou nesta semana.</div>'
+            : '<div class="topic">Revise os tópicos concluídos e refaça exercícios de erros recorrentes.</div>';
+          html += '</div>';
+          return;
+        }
+        const s = subjectById(sid);
+        html += '<div class="day-block'+(isPast?' past':'')+'" style="--tag-color:'+s.color+'"><div class="tag">'+s.name+'</div>';
+        if(isPast){
+          html += '<div class="past-note">Já passou nesta semana — veja o andamento real na aba Progresso.</div>';
+        } else {
+          const doneArr = state.completed[sid] || [];
+          const pending = s.topics.filter(t => doneArr.indexOf(t.id) < 0);
+          const idx = cursor[sid] || 0;
+          const t = pending[idx];
+          cursor[sid] = idx + 1;
+          if(!t){
+            html += '<div class="topic">🎉 Trilha concluída até lá!</div>';
+          } else {
+            html += '<div class="topic">'+t.n+'</div>';
+            html += '<ul class="content-list">'+t.c.map(item=>'<li>'+item+'</li>').join('')+'</ul>';
+          }
+        }
+        html += '</div>';
+      });
+
+      html += '</div></details>';
+    });
+    grid.innerHTML = html;
+  }
+
+  /* ---------- RENDER: PROGRESSO ---------- */
+  function renderSubjects(){
+    const slot = document.getElementById("subjects-slot");
+    let html = "";
+    SUBJECTS.forEach(s => {
+      const p = progressOf(s.id);
+      html += '<details class="subject" style="--sc:'+s.color+'">';
+      html += '<summary>';
+      html += '<span class="subj-color"></span>';
+      html += '<span class="subj-name">'+s.name+'</span>';
+      html += '<span class="subj-bar-wrap"><span class="subj-bar" style="width:'+p.pct+'%"></span></span>';
+      html += '<span class="subj-pct">'+p.done+'/'+p.total+'</span>';
+      html += '<span class="chevron">▶</span>';
+      html += '</summary>';
+
+      html += '<div class="trilha no-scrollbar">';
+      s.topics.forEach(t => {
+        const done = isDone(s.id, t.id);
+        const isCurrent = !done && currentTopic(s.id) && currentTopic(s.id).id === t.id;
+        html += '<div class="node'+(done?' done':'')+(isCurrent?' current':'')+'" style="--sc:'+s.color+'" title="'+t.n+'"></div>';
+      });
+      html += '</div>';
+
+      html += '<div class="topic-list">';
+      s.topics.forEach(t => {
+        const done = isDone(s.id, t.id);
+        html += '<label class="topic-item'+(done?' done':'')+'">';
+        html += '<input type="checkbox" '+(done?'checked':'')+' style="--sc:'+s.color+'" onchange="StudyApp.toggle(\''+s.id+'\',\''+t.id+'\')">';
+        html += '<span class="t-name"><span class="main">'+t.n+'</span><ul class="content-list">'+t.c.map(item=>'<li>'+item+'</li>').join('')+'</ul></span>';
+        html += '<span class="level-pill">'+(t.l==="fund"?"Fund.":"Médio")+'</span>';
+        html += '</label>';
+      });
+      html += '</div>';
+
+      html += '</details>';
+    });
+    slot.innerHTML = html;
+  }
+
+  /* ---------- RENDER: PAINEL ---------- */
+  function renderPainel(){
+    const slot = document.getElementById("painel-slot");
+    let totalDone = 0, totalAll = 0;
+    SUBJECTS.forEach(s => { const p = progressOf(s.id); totalDone += p.done; totalAll += p.total; });
+    const overallPct = Math.round((totalDone/totalAll)*100);
+    const weeklyHours = SUBJECTS.reduce((a,s)=>a+s.hours,0) + 1;
+
+    let html = '<div class="stat-row">';
+    html += '<div class="stat"><div class="num">'+overallPct+'%</div><div class="lbl">concluído no geral</div></div>';
+    html += '<div class="stat"><div class="num">'+totalDone+'/'+totalAll+'</div><div class="lbl">tópicos revisados</div></div>';
+    html += '<div class="stat"><div class="num">'+weeklyHours+'h</div><div class="lbl">carga semanal (seg–sáb)</div></div>';
+    html += '<div class="stat"><div class="num">'+revisaoStreak()+'</div><div class="lbl">dias seguidos de revisão</div></div>';
+    html += '</div>';
+
+    html += '<div class="card"><h2 class="section-title" style="margin-bottom:14px;">Progresso por matéria</h2><div class="mini-bars">';
+    SUBJECTS.forEach(s => {
+      const p = progressOf(s.id);
+      html += '<div class="mini-row"><span class="lbl">'+s.name+'</span><span class="track"><span class="fill" style="width:'+p.pct+'%;background:'+s.color+'"></span></span><span class="val">'+p.done+'/'+p.total+'</span></div>';
+    });
+    html += '</div></div>';
+
+    html += '<div class="card" style="margin-top:14px;"><h2 class="section-title" style="margin-bottom:14px;">Próximo tópico de cada matéria</h2><div class="next-list">';
+    SUBJECTS.forEach(s => {
+      const t = currentTopic(s.id);
+      html += '<div class="next-item"><span class="dot" style="background:'+s.color+'"></span><span>'+s.name+': '+(t? t.n : "trilha concluída 🎉")+'</span>';
+      if(t) html += '<span class="who">'+(t.l==="fund"?"fund.":"médio")+'</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '<button class="reset-btn" onclick="StudyApp.resetAll()">Reiniciar todo o progresso</button>';
+    html += '</div>';
+
+    slot.innerHTML = html;
+  }
+
+  function renderAll(){
+    renderHoje();
+    renderWeekGrid();
+    renderSubjects();
+    renderPainel();
+  }
+
+  /* ---------- NAV ---------- */
+  function setupNav(){
+    document.querySelectorAll("nav.tabs button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("nav.tabs button").forEach(b=>b.classList.remove("active"));
+        document.querySelectorAll("section.view").forEach(v=>v.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("view-"+btn.dataset.view).classList.add("active");
+      });
+    });
+  }
+
+  /* ---------- PUBLIC API ---------- */
+  window.StudyApp = {
+    toggle: function(subjectId, topicId){ toggleTopic(subjectId, topicId); },
+    completeCurrent: function(subjectId, topicId){ toggleTopic(subjectId, topicId); },
+    toggleRevisao: function(){ toggleRevisaoHoje(); },
+    resetAll: function(){
+      if(confirm("Isso vai apagar todo o progresso salvo. Tem certeza?")){
+        state = { completed:{}, revisaoLog:[] };
+        saveState();
+        renderAll();
+      }
+    }
+  };
+
+  /* ---------- INIT ---------- */
+  (async function init(){
+    setupNav();
+    await loadState();
+    renderAll();
+  })();
+
+})();
+</script>
+</body>
+</html>
