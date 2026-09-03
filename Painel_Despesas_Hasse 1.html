@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Retrofit Edifício Hasse — Painel de Investimento</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1EFE8;
+    --panel:#FAF9F5;
+    --ink:#171F26;
+    --line:#CFC9BA;
+    --rust:#8A3B24;
+    --rust-soft:#C97A5C;
+    --blue:#1F3A5F;
+    --blue-soft:#5A7896;
+    --steel:#6B7280;
+    --green:#3F6B44;
+    --amber:#96650F;
+    --paper-grid: repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 28px),
+                  repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 28px);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14.5px;
+    line-height:1.5;
+  }
+  .sheet{
+    max-width:1180px;
+    margin:28px auto;
+    background:var(--panel);
+    border:1px solid var(--line);
+  }
+  .num{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- title block ---------- */
+  .titleblock{
+    background:var(--blue);
+    background-image:var(--paper-grid);
+    color:#EDE9DF;
+    padding:22px 30px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    border-bottom:3px solid var(--rust);
+  }
+  .titleblock h1{
+    font-family:'Archivo', sans-serif;
+    font-weight:800;
+    font-size:26px;
+    margin:0 0 4px;
+    letter-spacing:0.2px;
+  }
+  .titleblock .sub{
+    font-size:13px;
+    color:#C9CFD9;
+  }
+  .tb-fields{
+    display:grid;
+    grid-template-columns:repeat(4,auto);
+    gap:0;
+    border:1px solid rgba(237,233,223,0.35);
+  }
+  .tb-fields div{
+    padding:6px 14px;
+    border-left:1px solid rgba(237,233,223,0.35);
+  }
+  .tb-fields div:first-child{border-left:none;}
+  .tb-fields .k{
+    font-size:9.5px;
+    color:#B9C2CE;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:2px;
+  }
+  .tb-fields .v{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:#F3F1EA;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:flex;
+    align-items:center;
+    gap:36px;
+    padding:26px 30px 22px;
+    border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .hero-num{
+    font-family:'Archivo', sans-serif;
+    font-weight:800;
+    font-size:52px;
+    color:var(--rust);
+    line-height:1;
+    white-space:nowrap;
+  }
+  .hero-label{
+    font-size:13px;
+    color:var(--steel);
+    max-width:220px;
+    margin-top:6px;
+  }
+  .hero-stats{
+    display:flex;
+    gap:0;
+    margin-left:auto;
+    flex-wrap:wrap;
+  }
+  .hero-stats .stat{
+    padding:0 22px;
+    border-left:1px solid var(--line);
+  }
+  .hero-stats .stat:first-child{border-left:none;}
+  .hero-stats .stat .n{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:22px;
+    color:var(--blue);
+  }
+  .hero-stats .stat .l{
+    font-size:11.5px;
+    color:var(--steel);
+    margin-top:2px;
+    max-width:130px;
+  }
+
+  /* ---------- section grid ---------- */
+  .grid2{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    border-bottom:1px solid var(--line);
+  }
+  .panel{
+    padding:20px 26px 22px;
+  }
+  .panel + .panel{border-left:1px solid var(--line);}
+  .panel h2{
+    font-family:'Archivo', sans-serif;
+    font-size:15px;
+    font-weight:700;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  .panel h2 .n{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    color:var(--steel);
+    font-size:12px;
+    margin-left:6px;
+  }
+
+  /* category bars */
+  .catrow{
+    display:grid;
+    grid-template-columns:190px 1fr 92px;
+    align-items:center;
+    gap:10px;
+    margin-bottom:9px;
+  }
+  .catrow .label{font-size:12.5px;}
+  .catbar-track{
+    background:#EAE6DA;
+    height:14px;
+    position:relative;
+    border:1px solid var(--line);
+  }
+  .catbar-fill{
+    height:100%;
+  }
+  .catrow .val{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-align:right;
+    color:var(--ink);
+  }
+  .catrow .pct{
+    color:var(--steel);
+    font-size:10.5px;
+  }
+
+  /* monthly chart */
+  .monthly{
+    display:flex;
+    align-items:flex-end;
+    gap:18px;
+    height:150px;
+    padding-top:10px;
+  }
+  .mcol{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    height:100%;
+  }
+  .mcol .mval{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink);
+    margin-bottom:6px;
+    white-space:nowrap;
+  }
+  .mcol .mbar{
+    width:100%;
+    max-width:56px;
+    background:var(--blue);
+  }
+  .mcol.partial .mbar{background:var(--blue-soft);}
+  .mcol .mlabel{
+    font-size:11px;
+    color:var(--steel);
+    margin-top:8px;
+    text-align:center;
+  }
+  .monthly-note{
+    font-size:10.5px;
+    color:var(--steel);
+    margin-top:10px;
+    font-style:italic;
+  }
+
+  /* payer table */
+  table.payer{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+  }
+  table.payer td{
+    padding:7px 0;
+    border-bottom:1px solid var(--line);
+    vertical-align:middle;
+  }
+  table.payer tr:last-child td{border-bottom:none;font-weight:600;}
+  table.payer td.who{width:56%;}
+  table.payer td.bar{width:20%;}
+  table.payer td.amt{
+    font-family:'IBM Plex Mono', monospace;
+    text-align:right;
+    white-space:nowrap;
+  }
+  .paybar-track{background:#EAE6DA;height:8px;border:1px solid var(--line);}
+  .paybar-fill{height:100%;background:var(--rust-soft);min-width:3px;}
+
+  /* pendencias */
+  .pend-list{list-style:none;margin:0 0 14px;padding:0;}
+  .pend-list li{
+    display:flex;
+    gap:10px;
+    padding:7px 0;
+    border-bottom:1px solid var(--line);
+    font-size:12.5px;
+  }
+  .pend-list li:last-child{border-bottom:none;}
+  .dot{
+    flex:0 0 8px;
+    width:8px;height:8px;
+    border-radius:50%;
+    margin-top:5px;
+  }
+  .dot.open{background:var(--amber);}
+  .dot.done{background:var(--green);}
+  .pend-list .txt b{display:block;font-weight:600;}
+  .pend-list .txt span{color:var(--steel);font-size:11.5px;}
+
+  .callout{
+    margin-top:14px;
+    border-left:3px solid var(--rust);
+    background:#F3ECE6;
+    padding:10px 14px;
+    font-size:12px;
+    color:#4A2B1E;
+  }
+  .callout b{color:var(--rust);}
+
+  /* footer */
+  .footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 26px;
+    font-size:10.5px;
+    color:var(--steel);
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .footer .brand{font-weight:600;color:var(--ink);}
+
+  .printbtn{
+    position:fixed;
+    top:16px;
+    right:16px;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    padding:9px 16px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:12.5px;
+    cursor:pointer;
+  }
+  .printbtn:hover{background:var(--ink);}
+
+  @media print{
+    .printbtn{display:none;}
+    body{background:#fff;}
+    .sheet{margin:0;border:none;max-width:none;}
+    @page{size:A4 landscape;margin:10mm;}
+  }
+  @media (max-width:820px){
+    .grid2{grid-template-columns:1fr;}
+    .panel + .panel{border-left:none;border-top:1px solid var(--line);}
+    .hero{flex-direction:column;align-items:flex-start;}
+    .hero-stats{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+
+<button class="printbtn" onclick="window.print()">Exportar / Imprimir PDF</button>
+
+<div class="sheet">
+
+  <div class="titleblock">
+    <div>
+      <h1>Retrofit Edifício Hasse — Painel de Investimento</h1>
+      <div class="sub">Acompanhamento financeiro da obra, com base nos RDOs (Relatórios Diários de Obra) e nos comprovantes de compra</div>
+    </div>
+    <div class="tb-fields">
+      <div><div class="k">Obra</div><div class="v">Ed. Hasse — R. Nirberto Haase, 50</div></div>
+      <div><div class="k">Contrato</div><div class="v">CT/PC-DVA-2026-01</div></div>
+      <div><div class="k">Período coberto</div><div class="v">19/06 a 02/09/2026</div></div>
+      <div><div class="k">Emitido em</div><div class="v">03/09/2026</div></div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="hero-num num">R$ 194.861,68</div>
+      <div class="hero-label">investidos na obra até 02/09/2026, entre materiais, mão de obra, projetos e equipamentos</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="n">46</div><div class="l">lançamentos de despesa</div></div>
+      <div class="stat"><div class="n">47</div><div class="l">RDOs emitidos (nº 001–047)</div></div>
+      <div class="stat"><div class="n">~8</div><div class="l">semanas de execução em campo</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>Para onde foi o investimento <span class="n">por categoria</span></h2>
+
+      <div class="catrow">
+        <div class="label">Mão de obra / execução</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:51.8%;background:var(--rust);"></div></div>
+        <div class="val">101.000,00<div class="pct">51,8%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Materiais e insumos</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:21.3%;background:var(--blue);"></div></div>
+        <div class="val">41.498,28<div class="pct">21,3%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Projetos técnicos (A2E)</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:11.3%;background:var(--blue);"></div></div>
+        <div class="val">22.000,00<div class="pct">11,3%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Blocos CCA (platibanda)</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:6.7%;background:var(--blue);"></div></div>
+        <div class="val">12.972,90<div class="pct">6,7%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Concreto e bombeamento</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:3.1%;background:var(--blue);"></div></div>
+        <div class="val">5.960,00<div class="pct">3,1%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Perda por fraude*</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:2.3%;background:var(--amber);"></div></div>
+        <div class="val">4.417,50<div class="pct">2,3%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Locação de equipamentos</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:2.1%;background:var(--blue);"></div></div>
+        <div class="val">4.120,00<div class="pct">2,1%</div></div>
+      </div>
+      <div class="catrow">
+        <div class="label">Fretes de materiais</div>
+        <div class="catbar-track"><div class="catbar-fill" style="width:1.5%;background:var(--blue);"></div></div>
+        <div class="val">2.893,00<div class="pct">1,5%</div></div>
+      </div>
+      <div class="monthly-note">* Ver nota sobre a tentativa de fraude na coluna de pendências, ao lado.</div>
+    </div>
+
+    <div class="panel">
+      <h2>Evolução mensal</h2>
+      <div class="monthly">
+        <div class="mcol"><div class="mval num">13.800</div><div class="mbar" style="height:13.1%;"></div><div class="mlabel">jun</div></div>
+        <div class="mcol"><div class="mval num">62.078</div><div class="mbar" style="height:58.8%;"></div><div class="mlabel">jul</div></div>
+        <div class="mcol"><div class="mval num">105.627</div><div class="mbar" style="height:100%;"></div><div class="mlabel">ago</div></div>
+        <div class="mcol partial"><div class="mval num">13.356</div><div class="mbar" style="height:12.6%;"></div><div class="mlabel">set*</div></div>
+      </div>
+      <div class="monthly-note">Valores em R$, sem centavos. * Setembro parcial (2 dias). Junho: compras antecipadas, antes do início dos RDOs diários (RDO 001 = 08/07).</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>Quem pagou</h2>
+      <table class="payer">
+        <tr>
+          <td class="who">F2 Assessoria e Consultoria de Negócios</td>
+          <td class="bar"><div class="paybar-track"><div class="paybar-fill" style="width:98.6%;"></div></div></td>
+          <td class="amt num">R$ 192.142,08</td>
+        </tr>
+        <tr>
+          <td class="who">Rogério Mattos Caldeira (A2E, via Credcrea)</td>
+          <td class="bar"><div class="paybar-track"><div class="paybar-fill" style="width:1.0%;"></div></div></td>
+          <td class="amt num">R$ 1.957,95</td>
+        </tr>
+        <tr>
+          <td class="who">Não especificado no RDO</td>
+          <td class="bar"><div class="paybar-track"><div class="paybar-fill" style="width:0.3%;"></div></div></td>
+          <td class="amt num">R$ 645,25</td>
+        </tr>
+        <tr>
+          <td class="who">Rogério Mattos Caldeira (pessoal, débito)</td>
+          <td class="bar"><div class="paybar-track"><div class="paybar-fill" style="width:0.1%;"></div></div></td>
+          <td class="amt num">R$ 116,40</td>
+        </tr>
+        <tr>
+          <td class="who">Total geral</td>
+          <td class="bar"></td>
+          <td class="amt num">R$ 194.861,68</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h2>Situação das pendências</h2>
+      <ul class="pend-list">
+        <li><div class="dot open"></div><div class="txt"><b>Vistoria dos pilares P51–P59</b><span>Inspeção de ferragem para liberar o fechamento da caixaria da platibanda — remarcada desde 08/08, ainda sem confirmação.</span></div></li>
+        <li><div class="dot open"></div><div class="txt"><b>Verificação da fundação do Pilar 45</b><span>Abertura do piso para conferir a profundidade do bloco de fundação — solicitada em 09/07, sem registro de execução desde então.</span></div></li>
+        <li><div class="dot open"></div><div class="txt"><b>Entrega dos blocos CCA (platibanda)</b><span>Compra de R$ 12.972,90 paga por adiantamento em 02/09; NF-e emitida como remessa futura — entrega em obra ainda não confirmada em RDO.</span></div></li>
+        <li><div class="dot done"></div><div class="txt"><b>4 itens já resolvidos</b><span>Reposição de graute, divergência de valor dos vergalhões (era desconto à vista), estorno integral do adiantamento à Azul Concretos e NF-e do fornecimento de concreto (Grupo Coelho).</span></div></li>
+      </ul>
+      <div class="callout">
+        <b>Transparência:</b> em 12/08, um fornecedor fictício (STR MX SP Distrib e Gestão) recebeu R$ 4.417,50 por um concreto que nunca foi entregue. A fraude foi identificada logo após o pagamento; o valor está registrado como perda, não como despesa de obra, e passou a reforçar a conferência de dados bancários antes de qualquer adiantamento.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div><span class="brand">A2E Engenharia Estrutural e Elétrica</span> · CNPJ 18.218.767/0001-57 · a2eestrutural.eng.br</div>
+    <div>Elaborado a partir da planilha "Despesas e Compras — Obra Retrofit Edifício Hasse" e dos RDOs 001 a 047</div>
+  </div>
+
+</div>
+
+</body>
+</html>
