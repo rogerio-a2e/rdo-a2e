@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ela precisa de um nome — Júlia Rambo Szekut Caldeira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EAEEEC;
+    --paper-note: #E1E7E6;
+    --ink: #202A2F;
+    --ink-soft: #55666D;
+    --ink-faint: #8B9B9F;
+    --river: #3E5C76;
+    --river-deep: #24384A;
+    --moon: #B08D57;
+    --rule: rgba(32,42,47,0.16);
+    --shadow: rgba(20,30,35,0.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #131A1E;
+      --paper-note: #182124;
+      --ink: #E7EAE8;
+      --ink-soft: #A9B6B9;
+      --ink-faint: #6F8083;
+      --river: #8FB0C9;
+      --river-deep: #17232C;
+      --moon: #D7B679;
+      --rule: rgba(231,234,232,0.14);
+      --shadow: rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #131A1E;
+    --paper-note: #182124;
+    --ink: #E7EAE8;
+    --ink-soft: #A9B6B9;
+    --ink-faint: #6F8083;
+    --river: #8FB0C9;
+    --river-deep: #17232C;
+    --moon: #D7B679;
+    --rule: rgba(231,234,232,0.14);
+    --shadow: rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Literata", "Iowan Old Style", "Georgia", serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero{
+    position: relative;
+    width: 100%;
+    line-height: 0;
+    background: linear-gradient(180deg, var(--river-deep) 0%, var(--river) 78%, var(--paper) 100%);
+  }
+  .hero svg{ display:block; width:100%; height:auto; }
+
+  main{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 28px 96px;
+  }
+
+  .masthead{
+    padding-top: 44px;
+    text-align: left;
+  }
+  .byline{
+    font-family: "Literata", serif;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin: 0 0 2px;
+  }
+  .kicker{
+    font-family: "Literata", serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--ink-faint);
+    margin: 0 0 28px;
+  }
+
+  h1{
+    font-family: "Fraunces", "Iowan Old Style", Georgia, serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(2rem, 5vw, 2.7rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 34px;
+    max-width: 11ch;
+    color: var(--ink);
+  }
+
+  article p{
+    font-size: 1.09rem;
+    line-height: 1.75;
+    margin: 0 0 1.3em;
+    max-width: 62ch;
+    color: var(--ink);
+  }
+  article p:first-of-type::first-letter{
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 3.4em;
+    font-weight: 500;
+    float: left;
+    line-height: 0.82;
+    padding: 0.03em 0.07em 0 0;
+    color: var(--river);
+  }
+
+  .divider{
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 56px 0 40px;
+  }
+
+  .note{
+    background: var(--paper-note);
+    border-radius: 3px;
+    padding: 30px 30px 26px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .note h2{
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    margin: 0 0 20px;
+    color: var(--ink);
+  }
+  .scores{
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .score{
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 34px;
+  }
+  .score .label{
+    display: block;
+    font-family: "Literata", serif;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+  .score .value{
+    display: block;
+    margin-top: 3px;
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--ink);
+  }
+  .score.total{
+    float: right;
+    margin-right: 0;
+    text-align: right;
+  }
+  .score.total .value{ color: var(--moon); font-weight: 500; }
+
+  .note p{
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .signature{
+    text-align: right;
+    font-family: "Fraunces", Georgia, serif;
+    font-style: italic;
+    font-size: 1.02rem;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  @media (max-width: 480px){
+    main{ padding: 0 20px 72px; }
+    .note{ padding: 24px 20px 22px; }
+    .scores{ gap: 16px 24px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero" aria-hidden="true">
+    <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <circle cx="586" cy="70" r="34" fill="var(--moon)" opacity="0.55"/>
+      <circle cx="586" cy="70" r="34" fill="var(--moon)" opacity="0.25">
+        <animate attributeName="opacity" values="0.25;0.4;0.25" dur="7s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M0,96 C120,70 200,118 320,96 C440,74 480,110 620,92 C700,80 760,100 800,88 L800,220 L0,220 Z" fill="var(--river-deep)" opacity="0.55"/>
+      <path d="M0,130 C110,150 230,104 360,132 C470,156 560,116 680,138 C730,148 770,132 800,140 L800,220 L0,220 Z" fill="var(--river)" opacity="0.6"/>
+      <path d="M0,164 C130,182 260,150 400,168 C520,184 620,158 800,172 L800,220 L0,220 Z" fill="var(--river)" opacity="0.85"/>
+      <path d="M0,158 Q80,150 160,158 T320,158" stroke="var(--paper)" stroke-width="1.4" fill="none" opacity="0.35"/>
+      <path d="M420,178 Q500,170 580,178 T740,176" stroke="var(--paper)" stroke-width="1.4" fill="none" opacity="0.3"/>
+    </svg>
+  </div>
+
+  <main>
+    <div class="masthead">
+      <p class="byline">Júlia Rambo Szekut Caldeira</p>
+      <p class="kicker">Crônica, 3 de setembro de 2026</p>
+    </div>
+
+    <h1>Ela precisa de um nome.</h1>
+
+    <article>
+      <p>A noite já tinha virado madrugada quando saí para pegar a balsa. A escuridão era de um tom azul sereno, com o brilho tímido da lua desaparecendo atrás das nuvens. O rio estava coberto pela neblina fria e úmida que me acompanharia pelo resto do dia. Na balsa vi as mesmas rostas cansadas e ocupadas como a minha, exceto por um menininho de olhar manso, abraçado a um bebezinho enrolado em uma manta e ignorado por todos. Tentei ignorá-lo também, mas o menino já havia me avistado.</p>
+
+      <p>— Senhor, com licença. Senhor! — Resisti, fingindo que não o via. — Senhor! O senhor poderia pagar pela nossa passagem por gentileza? — Assistiu o garotinho. Eu não quero me envolver, mas quando percebi o menino descalço e com poucas roupas, agarrado tão firmemente ao bebê, tive que responder.</p>
+
+      <p>— Sim rapaz, eu pago pela passagem de vocês.</p>
+
+      <p>O menino esboçou um sorriso de alívio, agradeceu gentilmente e se pôs a ninar a criança em seu colo.</p>
+
+      <p>— Eu acabei de conhecer ela — anunciou o garotinho com mais maturidade que aparentava ter. — Ouvi o choro dessa pequena enquanto passava na outra cidade. Ela é tão bonita, deve ser uma menina — disse ingenuamente.</p>
+
+      <p>Com o cenho franzido perguntei: — Como assim rapaz? Onde estão os pais dessa bebê?</p>
+
+      <p>— Eu não sei — ele respondeu — perguntei para as casas ao redor e ninguém me respondeu. Ela não tem pais, igual a mim, por isso estou levando-a para o orfanato comigo. Ela vai crescer e vamos brincar juntas. Vou ensinar ela a andar e falar, assim vamos poder andar juntas pela cidade. — Sorriu levemente enquanto olhava para a pequena toda embrulhada e quieta.</p>
+
+      <p>— Espero que seja assim — respondi. Na minha consciência percebi, que irônico, o único que resgatou a criança abandonada foi outra criança abandonada.</p>
+
+      <p>— Senhor — o menino interrompe o silêncio — ela precisa de um nome, o que o senhor acha de Isabela?</p>
+
+      <p>— Acho um bom nome para ela — disse sorrindo enquanto imaginava a moça que um dia esse bebê se tornaria. Mas ela estava quieta, muito quieta, como se só restasse o embrulho. Porém o menino não parecia perceber.</p>
+
+      <p>A balsa chegou na cidade. Paguei pelas passagens e me despedi das crianças abandonadas e observei de longe o menino esperançoso em direção ao orfanato, sendo coberto pela neblina, o garoto pode não ter entendido, mas ele salvou essa menina ao dar um nome para ela.</p>
+    </article>
+
+    <hr class="divider">
+
+    <section class="note">
+      <h2>Avaliação da redação</h2>
+      <div class="scores">
+        <div class="score"><span class="label">C1</span><span class="value">2,0</span></div>
+        <div class="score"><span class="label">C2</span><span class="value">2,0</span></div>
+        <div class="score"><span class="label">C3</span><span class="value">2,5</span></div>
+        <div class="score"><span class="label">C4</span><span class="value">2,5</span></div>
+        <div class="score total"><span class="label">Total</span><span class="value">9,0</span></div>
+      </div>
+      <p>Oi, Júlia! Sua história e redação estão muito bem feitas/escritas. A ausência de parágrafos levou ao decréscimo na C1. Qualquer dúvida, sigo à disposição.</p>
+      <p class="signature">Profª Rebeca</p>
+    </section>
+  </main>
+
+</body>
+</html>
